@@ -1,6 +1,7 @@
+# Берём официальный образ n8n
 FROM n8nio/n8n:latest
 
-# Устанавливаем зависимости для Chrome
+# Ставим нужные пакеты для Chrome/Puppeteer
 USER root
 RUN apt-get update && apt-get install -y \
     wget \
@@ -23,10 +24,14 @@ RUN apt-get update && apt-get install -y \
     libxkbcommon0 \
     libxshmfence1 \
     xdg-utils \
-    && rm -rf /var/lib/apt/lists/*
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Puppeteer
-RUN npm install puppeteer
+# Ставим Puppeteer
+RUN npm install puppeteer --omit=dev
 
 # Возвращаемся к пользователю n8n
 USER node
+
+# Если нужно, открываем порт 5678 (по умолчанию n8n)
+EXPOSE 5678
